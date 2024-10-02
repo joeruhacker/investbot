@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Инвестиционное Приложение</title>
+    <style>
+        /* Общие стили */
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f5f7;
+            color: #1c1c1e;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            padding: 40px 0;
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 1.2em;
+            color: #6e6e73;
+        }
+        section {
+            background-color: #ffffff;
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        section h2 {
+            margin-top: 0;
+            font-size: 1.8em;
+            border-bottom: 2px solid #e5e5ea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        ul li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 25px;
+        }
+        ul li::before {
+            content: "✔️";
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        .calculator {
+            display: flex;
+            flex-direction: column;
+        }
+        .calculator input, .calculator button {
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #d1d1d6;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        .calculator button {
+            background-color: #0a84ff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .calculator button:hover {
+            background-color: #0066cc;
+        }
+        .result {
+            background-color: #f0f0f5;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 1.1em;
+        }
+        .telegram-button {
+            display: inline-block;
+            padding: 15px 25px;
+            background-color: #0088cc;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        .telegram-button:hover {
+            background-color: #005f8a;
+        }
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 2em;
+            }
+            section h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Добро пожаловать в Инвестиционное Приложение</h1>
+            <p>Ознакомьтесь с правилами перед инвестированием</p>
+        </header>
+
+        <section>
+            <h2>Правила</h2>
+            <ul>
+                <li>Администрация никогда не пишет вам первой в личные сообщения, всегда проверяйте контакты.</li>
+                <li>Дневной процент составляет от 4 до 5 процентов, месячный доход же может составлять до 150%.</li>
+                <li>Минимальное пополнение 7500₽.</li>
+                <li>Минимальный вывод 1500₽.</li>
+                <li>То, что вы пополнили, можно вывести через 55 дней после инвестирования, доход же можно выводить в любое время.</li>
+                <li>Вывод осуществляется в течение 24 часов, обычно в течение часа.</li>
+                <li>Доход можно впускать в оборот, соответственно увеличивать доход.</li>
+                <li>Дополнительно можно зарабатывать, приглашая друзей, подробнее в кнопке «Рефералка» в боте.</li>
+                <li>Если сумма депозита крупная, отписывайте администрации, выдадут другие реквизиты.</li>
+                <li>Переход к администратору: <a href="https://t.me/joe_hacker" target="_blank" class="telegram-button">Перейти в Telegram</a></li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Калькулятор Дохода</h2>
+            <div class="calculator">
+                <input type="number" id="investment" placeholder="Сумма инвестирования (₽)" min="7500">
+                <select id="duration">
+                    <option value="daily">Дневной процент (4-5%)</option>
+                    <option value="monthly">Месячный доход (до 150%)</option>
+                </select>
+                <button onclick="calculateIncome()">Рассчитать</button>
+                <div class="result" id="result"></div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function calculateIncome() {
+            const investment = parseFloat(document.getElementById('investment').value);
+            const duration = document.getElementById('duration').value;
+            const resultDiv = document.getElementById('result');
+
+            if (isNaN(investment) || investment < 7500) {
+                resultDiv.innerHTML = "Пожалуйста, введите сумму инвестирования не менее 7500₽.";
+                return;
+            }
+
+            let income = 0;
+            let details = "";
+
+            if (duration === 'daily') {
+                // Предположим, что рассчитываем доход за 30 дней
+                const dailyRateMin = 0.04;
+                const dailyRateMax = 0.05;
+                income = investment * ((1 + dailyRateMin) ** 30 - 1);
+                const incomeMax = investment * ((1 + dailyRateMax) ** 30 - 1);
+                details = `Ваш доход за 30 дней: от ${income.toFixed(2)}₽ до ${incomeMax.toFixed(2)}₽.`;
+            } else if (duration === 'monthly') {
+                // Месячный доход до 150%
+                const monthlyRate = 1.5;
+                income = investment * monthlyRate;
+                details = `Ваш месячный доход: ${income.toFixed(2)}₽ (150%).`;
+            }
+
+            resultDiv.innerHTML = details;
+        }
+    </script>
+</body>
+</html>
