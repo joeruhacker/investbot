@@ -9,33 +9,44 @@
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #f5f5f7;
+            background-color: #f2f2f7;
             color: #1c1c1e;
             line-height: 1.6;
+            overflow-x: hidden;
         }
         .container {
             max-width: 900px;
             margin: 0 auto;
             padding: 20px;
+            animation: fadeIn 1s ease-out;
         }
         header {
             text-align: center;
             padding: 40px 0;
+            animation: slideDown 1s ease-out;
         }
         header h1 {
-            font-size: 2.5em;
+            font-size: 2.8em;
             margin-bottom: 10px;
+            color: #000;
+            animation: textAppear 1.2s ease-out;
         }
         header p {
             font-size: 1.2em;
             color: #6e6e73;
+            animation: textAppear 1.4s ease-out;
         }
         section {
             background-color: #ffffff;
             padding: 30px;
             margin-bottom: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 16px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
         }
         section h2 {
             margin-top: 0;
@@ -43,6 +54,8 @@
             border-bottom: 2px solid #e5e5ea;
             padding-bottom: 10px;
             margin-bottom: 20px;
+            color: #333;
+            animation: underlineExpand 1s ease-out;
         }
         ul {
             list-style: none;
@@ -51,40 +64,58 @@
         ul li {
             margin-bottom: 15px;
             position: relative;
-            padding-left: 25px;
+            padding-left: 30px;
+            font-size: 1em;
+            opacity: 0;
+            animation: fadeInList 0.5s forwards;
         }
         ul li::before {
             content: "✔️";
             position: absolute;
             left: 0;
             top: 0;
+            color: #0a84ff;
+            font-size: 1.2em;
         }
         .calculator {
             display: flex;
             flex-direction: column;
+            animation: slideInLeft 1s ease-out;
         }
-        .calculator input, .calculator select, .calculator button {
+        .calculator input, .calculator button {
             padding: 15px;
             margin-bottom: 15px;
             border: 1px solid #d1d1d6;
             border-radius: 8px;
             font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .calculator input:focus, .calculator button:focus {
+            border-color: #0a84ff;
+            box-shadow: 0 0 5px rgba(10, 132, 255, 0.5);
+            outline: none;
         }
         .calculator button {
             background-color: #0a84ff;
             color: white;
             border: none;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
         }
         .calculator button:hover {
             background-color: #0066cc;
+            transform: scale(1.05);
         }
         .result {
             background-color: #f0f0f5;
             padding: 20px;
             border-radius: 8px;
             font-size: 1.1em;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .result.show {
+            opacity: 1;
         }
         .telegram-button {
             display: inline-block;
@@ -94,10 +125,12 @@
             border-radius: 8px;
             text-decoration: none;
             font-size: 1em;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 10px;
         }
         .telegram-button:hover {
             background-color: #005f8a;
+            transform: scale(1.05);
         }
         @media (max-width: 600px) {
             header h1 {
@@ -107,20 +140,52 @@
                 font-size: 1.5em;
             }
         }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes textAppear {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes underlineExpand {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        @keyframes fadeInList {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Добро пожаловать в Инвестиционное Приложение</h1>
-            <p>Ознакомьтесь с правилами перед инвестированием</p>
-        </header>
+        <!-- Калькулятор Дохода -->
+        <section>
+            <h2>Калькулятор Дохода</h2>
+            <div class="calculator">
+                <input type="number" id="investment" placeholder="Сумма инвестирования (₽)" min="7500" required>
+                <button onclick="calculateIncome()">Рассчитать</button>
+                <div class="result" id="result"></div>
+            </div>
+        </section>
 
+        <!-- Правила -->
         <section>
             <h2>Правила</h2>
             <ul>
                 <li>Администрация никогда не пишет вам первой в личные сообщения, всегда проверяйте контакты.</li>
-                <li>Дневной процент составляет от 4 до 5 процентов, месячный доход же может составлять до 150%.</li>
+                <li>Дневной процент составляет 4 процента.</li>
                 <li>Минимальное пополнение 7500₽.</li>
                 <li>Минимальный вывод 1500₽.</li>
                 <li>То, что вы пополнили, можно вывести через 55 дней после инвестирования, доход же можно выводить в любое время.</li>
@@ -131,19 +196,6 @@
                 <li>Переход к администратору: <a href="https://t.me/joe_hacker" target="_blank" class="telegram-button">Перейти в Telegram</a></li>
             </ul>
         </section>
-
-        <section>
-            <h2>Калькулятор Дохода</h2>
-            <div class="calculator">
-                <input type="number" id="investment" placeholder="Сумма инвестирования (₽)" min="7500">
-                <select id="duration">
-                    <option value="daily">Дневной процент (4-5%)</option>
-                    <option value="monthly">Месячный доход (до 150%)</option>
-                </select>
-                <button onclick="calculateIncome()">Рассчитать</button>
-                <div class="result" id="result"></div>
-            </div>
-        </section>
     </div>
 
     <!-- Подключение Telegram Web Apps JS API -->
@@ -151,55 +203,42 @@
     <script>
         // Инициализация Telegram WebApp
         const tg = window.Telegram.WebApp;
+        tg.ready();
 
         // Функция для скрытия клавиатуры
         function hideKeyboard() {
             // Размываем все активные элементы ввода
-            const activeElements = document.activeElement;
-            if (activeElements) {
-                activeElements.blur();
+            const activeElement = document.activeElement;
+            if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+                activeElement.blur();
             }
         }
 
         function calculateIncome() {
             const investmentInput = document.getElementById('investment');
-            const durationSelect = document.getElementById('duration');
             const resultDiv = document.getElementById('result');
 
             const investment = parseFloat(investmentInput.value);
-            const duration = durationSelect.value;
 
             if (isNaN(investment) || investment < 7500) {
                 resultDiv.innerHTML = "Пожалуйста, введите сумму инвестирования не менее 7500₽.";
+                resultDiv.classList.add('show');
                 hideKeyboard();
                 return;
             }
 
-            let income = 0;
-            let details = "";
+            const dailyRate = 0.04; // 4%
+            const days = 30; // Расчет на 30 дней
+            const income = investment * dailyRate * days;
 
-            if (duration === 'daily') {
-                // Предположим, что рассчитываем доход за 30 дней
-                const dailyRateMin = 0.04;
-                const dailyRateMax = 0.05;
-                income = investment * ((1 + dailyRateMin) ** 30 - 1);
-                const incomeMax = investment * ((1 + dailyRateMax) ** 30 - 1);
-                details = `Ваш доход за 30 дней: от ${income.toFixed(2)}₽ до ${incomeMax.toFixed(2)}₽.`;
-            } else if (duration === 'monthly') {
-                // Месячный доход до 150%
-                const monthlyRate = 1.5;
-                income = investment * monthlyRate;
-                details = `Ваш месячный доход: ${income.toFixed(2)}₽ (150%).`;
-            }
+            const formattedIncome = income.toLocaleString('ru-RU', { style: 'currency', currency: 'RUB' });
 
-            resultDiv.innerHTML = details;
+            resultDiv.innerHTML = `Ваш доход за ${days} дней: <strong>${formattedIncome}</strong>.`;
+            resultDiv.classList.add('show');
 
             // Скрываем клавиатуру после расчёта
             hideKeyboard();
         }
-
-        // Настройка WebApp UI, если необходимо
-        tg.ready();
     </script>
 </body>
 </html>
